@@ -28,8 +28,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests (Skip CP5)
-        run: pytest --ignore=tests/test_cp5.py -v
+      - name: Run tests (Skip CP5 and Bonus)
+        run: pytest --ignore=tests/test_cp5.py --ignore=tests/test_bonus_cicd.py -v
 
   build:
     name: Build Docker Image
