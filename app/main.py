@@ -18,6 +18,7 @@ from functools import lru_cache
 
 from fastapi import Depends, FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from utils.mock_llm import ask_llm
@@ -177,6 +178,15 @@ def ask(
         "tokens": {"in": result["tokens_in"], "out": result["tokens_out"]},
     }
 
+
+# Mount static files at the end so it doesn't override API routes
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
+# Mount static files
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
+# Mount static files at the end so it doesn't override API routes
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn

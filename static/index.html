@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hạ Tầng Cloud & Deployment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09090b;
+            --card-bg: rgba(24, 24, 27, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text: #fafafa;
+            --text-muted: #a1a1aa;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.3);
+            --secondary: #8b5cf6;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Gradients */
+        .bg-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        
+        .glow-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary-glow);
+            top: -100px;
+            left: -100px;
+        }
+
+        .glow-2 {
+            width: 500px;
+            height: 500px;
+            background: rgba(139, 92, 246, 0.2);
+            bottom: -200px;
+            right: -100px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Glass Cards Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-box svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .glass-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .glass-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Code Block */
+        .code-showcase {
+            background: #000;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-top: 4rem;
+        }
+
+        .code-header {
+            background: #18181b;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mac-btn {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+        }
+        .close { background: #ff5f56; }
+        .min { background: #ffbd2e; }
+        .max { background: #27c93f; }
+
+        .code-content {
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .c-keyword { color: #c678dd; }
+        .c-string { color: #98c379; }
+        .c-function { color: #61afef; }
+        .c-comment { color: #5c6370; }
+
+        footer {
+            text-align: center;
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="container">
+        <header>
+            <div class="badge">
+                <span class="dot"></span> Live on Render
+            </div>
+            <h1>Hạ Tầng Cloud & Deployment</h1>
+            <p class="subtitle">Từ mã nguồn chạy cục bộ (localhost) tiến lên hệ thống chuẩn Production trên Cloud với đầy đủ bảo mật và CI/CD.</p>
+        </header>
+
+        <div class="features-grid">
+            <div class="glass-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </div>
+                <h3>1. 12-Factor App</h3>
+                <p>Quản lý cấu hình linh hoạt thông qua biến môi trường (Environment Variables). Không bao giờ hardcode mật khẩu hay API Key vào source code.</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <h3>2. Multi-stage Docker</h3>
+                <p>Đóng gói ứng dụng vào container với kỹ thuật Multi-stage build để giảm thiểu dung lượng Image (dưới 500MB) và tăng tính bảo mật.</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <h3>3. API Security</h3>
+                <p>Bảo vệ API khỏi các cuộc tấn công DDoS với Rate Limiter thuật toán Sliding Window và hệ thống Cost Guard kiểm soát ngân sách LLM.</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </div>
+                <h3>4. Reliability</h3>
+                <p>Thiết kế hệ thống phi trạng thái (Stateless) kết hợp với Liveness & Readiness Probes giúp tự động phát hiện lỗi và phục hồi hệ thống.</p>
+            </div>
+            
+            <div class="glass-card">
+                <div class="icon-box" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <h3>5. Cloud Deploy</h3>
+                <p>Đưa hệ thống lên môi trường đám mây thực tế (Render/Railway), xử lý Graceful Shutdown để không làm gián đoạn request của người dùng khi update.</p>
+            </div>
+
+            <div class="glass-card">
+                <div class="icon-box" style="background: linear-gradient(135deg, #10b981, #3b82f6);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h3>BONUS: CI/CD Pipeline</h3>
+                <p>Tự động hóa toàn bộ quy trình kiểm thử và triển khai bằng GitHub Actions. Tự động Deploy lên server khi code vượt qua mọi bài test.</p>
+            </div>
+        </div>
+
+        <div class="code-showcase">
+            <div class="code-header">
+                <div class="mac-btn close"></div>
+                <div class="mac-btn min"></div>
+                <div class="mac-btn max"></div>
+                <span style="margin-left: 10px; color: #888; font-size: 0.8rem; font-family: sans-serif;">.github/workflows/ci.yml</span>
+            </div>
+            <div class="code-content">
+<span class="c-comment"># Tự động hóa Pipeline từ lúc Push code đến lúc lên Production</span>
+<span class="c-keyword">name</span>: CI/CD Pipeline
+
+<span class="c-keyword">on</span>:
+  <span class="c-keyword">push</span>:
+    <span class="c-keyword">branches</span>: [<span class="c-string">"main"</span>]
+
+<span class="c-keyword">jobs</span>:
+  <span class="c-function">test</span>:
+    <span class="c-keyword">runs-on</span>: ubuntu-latest
+    <span class="c-keyword">steps</span>:
+      - <span class="c-keyword">uses</span>: actions/checkout@v4
+      - <span class="c-keyword">run</span>: pytest
+
+  <span class="c-function">deploy</span>:
+    <span class="c-keyword">needs</span>: test
+    <span class="c-keyword">runs-on</span>: ubuntu-latest
+    <span class="c-keyword">steps</span>:
+      - <span class="c-keyword">run</span>: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+            </div>
+        </div>
+
+        <footer>
+            <p>Day 12 - Advanced Agentic Coding - Developed by Ngô Minh Phong</p>
+        </footer>
+    </div>
+</body>
+</html>
