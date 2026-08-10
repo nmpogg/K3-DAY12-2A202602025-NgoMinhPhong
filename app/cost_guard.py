@@ -36,7 +36,8 @@ class CostGuard:
         Key chưa tồn tại → Redis trả None → hàm này phải trả ``0.0``.
         Nhớ ép kiểu ``float(...)`` vì Redis trả về chuỗi.
         """
-        raise NotImplementedError("TODO (CP3): cài đặt spent")
+        val = self.client.get(self._key(user_id, month))
+        return float(val) if val is not None else 0.0
 
     def check(
         self,
@@ -50,7 +51,11 @@ class CostGuard:
         → raise ``HTTPException(status_code=402, detail="monthly budget exceeded")``.
         402 = Payment Required, đúng ngữ nghĩa cho tình huống hết ngân sách.
         """
-        raise NotImplementedError("TODO (CP3): cài đặt check")
+        if self.spent(user_id, month) + estimated_cost > self.budget:
+            raise HTTPException(
+                status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                detail="monthly budget exceeded"
+            )
 
     def record(self, user_id: str, cost: float, month: str | None = None) -> float:
         """Cộng dồn chi phí vừa phát sinh, trả về tổng mới.
@@ -60,4 +65,10 @@ class CostGuard:
           2. ``self.client.expire(key, KEY_TTL_SECONDS)``
           3. ``return float(total)``
         """
-        raise NotImplementedError("TODO (CP3): cài đặt record")
+        key = self._key(user_id, month)
+        # Tối ưu: Dùng pipeline để gom 2 lệnh Redis (incrbyfloat và expire)
+        pipe = self.client.pipeline()
+        pipe.incrbyfloat(key, cost)
+        pipe.expire(key, KEY_TTL_SECONDS)
+        results = pipe.execute()
+        return float(results[0])
