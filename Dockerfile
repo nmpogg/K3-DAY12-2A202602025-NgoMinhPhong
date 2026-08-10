@@ -35,6 +35,7 @@ WORKDIR /app
 COPY --from=builder /install /usr/local
 COPY app/ app/
 COPY utils/ utils/
+COPY static/ static/
 
 # Chạy dưới quyền user thường (Alpine dùng adduser -D)
 RUN adduser -D appuser
