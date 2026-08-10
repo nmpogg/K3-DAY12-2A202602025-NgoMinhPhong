@@ -34,4 +34,4 @@ def verify_api_key(
 
     Gợi ý: dùng ``status.HTTP_401_UNAUTHORIZED`` cho dễ đọc.
     """
-    raise NotImplementedError("TODO (CP3): cài đặt verify_api_key")
+    
